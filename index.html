@@ -2,9 +2,9 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="3600"> <!-- Recarrega após 1 hora, como fallback -->
+  <meta http-equiv="refresh" content="3"> <!-- Recarrega após 3 segundos (fallback) -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>1-Painel de Senhas</title>
+  <title>Painel de Senhas</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -101,9 +101,9 @@
       }
     }
 
-    // Atualiza a cada 10 segundos
+    // Atualiza a cada 3 segundos
     atualizarPainel();
-    setInterval(atualizarPainel, 10000);
+    setInterval(atualizarPainel, 3000);
   </script>
 </body>
 </html>
