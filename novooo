@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="refresh" content="3"> <!-- Fallback a cada 3s -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teste Painel de Senhas</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #000; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      height: 100vh; margin: 0; }
+    .painel { text-align: center; }
+    .senha { font-size: 5rem; font-weight: bold; margin: 0.5rem 0; }
+    .tipo { font-size: 2rem; margin-bottom: 1.5rem; }
+    .preferencial { color: #e91e63; }
+    .comum { color: #2196f3; }
+    .titulo { font-size: 2rem; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="painel">
+    <div>
+      <div class="titulo">Senha Atual:</div>
+      <div id="senhaAtual" class="senha">—</div>
+      <div id="tipoAtual" class="tipo"></div>
+    </div>
+    <div>
+      <div class="titulo">Senha Anterior:</div>
+      <div id="senhaAnterior" class="senha">—</div>
+      <div id="tipoAnterior" class="tipo"></div>
+    </div>
+  </div>
+
+  <script>
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSnLfhyhn_w7bzHeMBPAHJzG2YeTGTQl_VkuOn_fP2oZnjLKXRnMo4Beer_6MNWMXjvrRvTXH6U1EJA/pub?gid=1163054248&single=true&output=csv';
+
+    function detectarTipoSenha(senha) {
+      return senha?.startsWith('P') ? 'Preferencial' :
+             senha?.startsWith('C') ? 'Comum' : '';
+    }
+
+    function aplicarEstilo(elSenha, elTipo, senha) {
+      const tipo = detectarTipoSenha(senha);
+      elSenha.textContent = senha || '—';
+      elTipo.textContent = tipo ? `(${tipo})` : '';
+
+      elSenha.className = 'senha ' + (tipo === 'Preferencial' ? 'preferencial' : 'comum');
+      elTipo.className = 'tipo ' + (tipo === 'Preferencial' ? 'preferencial' : 'comum');
+    }
+
+    async function atualizarPainel() {
+      try {
+        const resp = await fetch(CSV_URL, { cache: 'no-store' });
+        const txt = await resp.text();
+        const linhas = txt.trim().split('\n').map(l => l.split(','));
+        const anterior = linhas[1]?.[1] || '';
+        const atual = linhas[2]?.[1] || '';
+        aplicarEstilo(document.getElementById('senhaAtual'), document.getElementById('tipoAtual'), atual);
+        aplicarEstilo(document.getElementById('senhaAnterior'), document.getElementById('tipoAnterior'), anterior);
+      } catch (e) {
+        console.error('Erro ao ler CSV:', e);
+      }
+    }
+
+    atualizarPainel();
+    setInterval(atualizarPainel, 3000);
+  </script>
+</body>
+</html>
