@@ -21,6 +21,13 @@
       margin: 0.5em 0;
       text-align: center;
     }
+    .preferencial span {
+      color: #e91e63; /* rosa */
+    }
+    .comum span {
+      color: #2196f3; /* azul */
+    }
+
 
     span {
       font-size: 6rem;
@@ -40,9 +47,18 @@
         const linhas = texto.trim().split("\n");
         const atual = linhas[2]?.split(",")[1]?.trim() || "--";
         document.getElementById("senha-atual").textContent = atual;
+        const senha = linhaX; // ex: P003 ou C007
+
+        const tipo = senha.startsWith("P") ? "preferencial" : "comum";
+
+        document.getElementById("senha-atual").textContent = senha;
+
+        document.getElementById("painel").className = tipo;
+
       } catch (e) {
         console.error("Erro:", e);
       }
+        
     }
 
     carregarSenhaAtual();
