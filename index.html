@@ -63,47 +63,47 @@
   </div>
 
   <script>
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSnLfhyhn_w7bzHeMBPAHJzG2YeTGTQl_VkuOn_fP2oZnjLKXRnMo4Beer_6MNWMXjvrRvTXH6U1EJA/pub?gid=1163054248&single=true&output=csv';
+  const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSnLfhyhn_w7bzHeMBPAHJzG2YeTGTQl_VkuOn_fP2oZnjLKXRnMo4Beer_6MNWMXjvrRvTXH6U1EJA/pub?gid=1163054248&single=true&output=csv';
 
-    function detectarTipoSenha(senha) {
-      if (!senha) return '';
-      return senha.startsWith('P') ? 'Preferencial' : senha.startsWith('C') ? 'Comum' : '';
+  function detectarTipoSenha(senha) {
+    if (!senha) return '';
+    return senha.startsWith('P') ? 'Preferencial' : senha.startsWith('C') ? 'Comum' : '';
+  }
+
+  function aplicarEstilo(elementoSenha, elementoTipo, senha) {
+    const tipo = detectarTipoSenha(senha);
+    if (tipo === 'Preferencial') {
+      elementoSenha.className = 'senha preferencial';
+      elementoTipo.className = 'tipo preferencial';
+    } else {
+      elementoSenha.className = 'senha comum';
+      elementoTipo.className = 'tipo comum';
     }
 
-    function aplicarEstilo(elementoSenha, elementoTipo, senha) {
-      const tipo = detectarTipoSenha(senha);
-      if (tipo === 'Preferencial') {
-        elementoSenha.className = 'senha preferencial';
-        elementoTipo.className = 'tipo preferencial';
-      } else {
-        elementoSenha.className = 'senha comum';
-        elementoTipo.className = 'tipo comum';
-      }
+    elementoSenha.textContent = senha || '-';
+    elementoTipo.textContent = tipo ? `(${tipo})` : '';
+  }
 
-      elementoSenha.textContent = senha || '-';
-      elementoTipo.textContent = tipo ? `(${tipo})` : '';
+  async function atualizarPainel() {
+    try {
+      const response = await fetch(CSV_URL);
+      const csv = await response.text();
+      const linhas = csv.trim().split('\n').map(linha => linha.split(','));
+
+      // Garante que existam pelo menos 3 linhas
+      const senhaAnterior = linhas[1]?.[1] || '-'; // B2
+      const senhaAtual = linhas[2]?.[1] || '-';    // B3
+
+      aplicarEstilo(document.getElementById('senhaAtual'), document.getElementById('tipoAtual'), senhaAtual);
+      aplicarEstilo(document.getElementById('senhaAnterior'), document.getElementById('tipoAnterior'), senhaAnterior);
+    } catch (erro) {
+      console.error('Erro ao buscar os dados:', erro);
     }
+  }
 
-    async function atualizarPainel() {
-      try {
-        const response = await fetch(CSV_URL);
-        const csv = await response.text();
-        const linhas = csv.trim().split('\n');
-        const dados = linhas.map(l => l.split(','));
+  atualizarPainel();
+  setInterval(atualizarPainel, 3000); // Atualiza a cada 3 segundos
+</script>
 
-        const senhaAnterior = dados[1][1]; // B2
-        const senhaAtual = dados[2][1];    // B3
-
-        aplicarEstilo(document.getElementById('senhaAtual'), document.getElementById('tipoAtual'), senhaAtual);
-        aplicarEstilo(document.getElementById('senhaAnterior'), document.getElementById('tipoAnterior'), senhaAnterior);
-      } catch (erro) {
-        console.error('Erro ao buscar os dados:', erro);
-      }
-    }
-
-    // Atualiza a cada 3 segundos
-    atualizarPainel();
-    setInterval(atualizarPainel, 3000);
-  </script>
 </body>
 </html>
