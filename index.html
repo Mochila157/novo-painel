@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta http-equiv="refresh" content="3600"> <!-- Recarrega após 1 hora, como fallback -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Painel de Senhas</title>
+  <title>1-Painel de Senhas</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -97,4 +97,13 @@
         aplicarEstilo(document.getElementById('senhaAtual'), document.getElementById('tipoAtual'), senhaAtual);
         aplicarEstilo(document.getElementById('senhaAnterior'), document.getElementById('tipoAnterior'), senhaAnterior);
       } catch (erro) {
-        console.error('Erro ao buscar o
+        console.error('Erro ao buscar os dados:', erro);
+      }
+    }
+
+    // Atualiza a cada 10 segundos
+    atualizarPainel();
+    setInterval(atualizarPainel, 10000);
+  </script>
+</body>
+</html>
